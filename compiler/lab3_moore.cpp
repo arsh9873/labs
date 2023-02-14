@@ -1,136 +1,46 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
+#include<bits/stdc++.h>
 using namespace std;
 int main(){
-    ifstream myfile("moore.txt");
-    string temp,init,states,output;
-    int counter=0,stcount=0;
-    while(getline(myfile,temp)){
-        if(counter==0){
-            init+=temp;
+    FILE *pfile,*pf;
+    pfile = fopen("moore.txt","r");
+    pf = fopen("moore.txt","r");
+    int init,c,newline_cnt=0,numspace=0;
+    vector<vector<int>> ipstates;
+    vector<int> opstates;
+    fscanf(pf,"%d",&init);
+    while((c=fgetc(pfile))!=EOF){
+        if(c==10){
+        if(newline_cnt>0){
+        vector<int> temp1;
+        int temp2;
+        for(int k=0;k<numspace;k++){
+        int iptemp;
+        fscanf(pf,"%d",&iptemp);
+        temp1.push_back(iptemp);
         }
-        else{
-            states+=temp;
-            states.push_back('/');
-            stcount++;
+        fscanf(pf,"%d",&temp2);
+        opstates.push_back(temp2);
+        ipstates.push_back(temp1);
+        temp1.clear();
         }
-        counter++;
-        temp.clear();
-    }
-    cout<<"\nnum of states:"<<stcount<<endl;
-    cout<<"init:"<<init<<endl;
-    cout<<"states:"<<states;
-    int k=0,i=0,j=0;
-    string ipstates,opstates;
-    while(i<states.size()){
-        if(states[i]==' '){
-            i++;
-            continue;
+            newline_cnt++;
+            numspace=0;
         }
-        else if(states[i]=='/'){
-            ipstates.push_back('/');
-            opstates.push_back('/');
-            i++;
-            k=0;
-            continue;
-        }
-        else{
-        if(k<2){
-            if(states[i]=='-'){
-            ipstates.push_back('-');
-            ipstates.push_back(' ');    
-            i++;//skipped when -
-            k++;
-            }
-            else{
-            ipstates.push_back(states[i]);
-            ipstates.push_back(' ');
-            k++;
-            }
-        }
-        else if(k==2){
-            if(states[i]=='-'){
-            opstates.push_back('-');
-            opstates.push_back(' ');    
-            i++;//skipped when -
-            k++;
-            }
-            else{
-            opstates.push_back(states[i]);
-            opstates.push_back(' ');
-            k++;
-            }
+        if(c==32){
+            numspace++;
         }
     }
-        i++;
+    cout<<"\nipsteates:\n";
+    for(int i=0;i<ipstates.size();i++){
+        for(int j=0;j<ipstates[i].size();j++)
+            cout<<ipstates[i][j]<<" ";
+        cout<<endl;
     }
-    cout<<"\ninput states:"<<ipstates;
-    cout<<"\noutput states:"<<opstates;
-    int temp2=stcount;
-    int ip[stcount][2],op[stcount];//rows= num of states, col = num of inputs
-    int r1=0,c1=0;
-    i=0;
-    while(temp2>0){
-    if(ipstates[i]!='/'){
-        if(ipstates[i]==' '){
-            i++;
-        }
-        else{
-            if(ipstates[i]=='-'){
-                ip[r1][c1++]=-1;
-                i++;
-            }
-            else{
-            ip[r1][c1++]=int(ipstates[i])-48;
-            i++;
-            }
-        }
+    cout<<"\nopsteates:\n";
+    for(int i=0;i<opstates.size();i++){
+            cout<<opstates[i]<<" ";
+        cout<<endl;
     }
-    else if(ipstates[i]=='/'){
-        r1++;
-        c1=0;
-        i++;
-        temp2--;
-    }
-    }
- 
-	i=0;
-    r1=0;
-    temp2=stcount;
-    while(temp2>0){
-    if(opstates[i]!='/'){
-        if(opstates[i]==' '){
-            i++;
-        }
-        else{
-            if(opstates[i]=='-'){
-                op[r1++]=-1;
-                i++;
-            }
-            else{
-            op[r1++]=int(opstates[i])-48;
-            i++;
-            }
-        }
-    }
-    else if(opstates[i]=='/'){
-        i++;
-        temp2--;
-    }
-    }
-    cout<<"\nip table:"<<endl;
-    for(i=0;i<stcount;i++){
-		for(j=0;j<2;j++)
-			cout<<ip[i][j]<<" ";
-		cout<<endl;
-	}
-	cout<<"\nop table:"<<endl;
-    for(i=0;i<stcount;i++){
-		cout<<op[i]<<" ";
-		cout<<endl;
-	}
     while(1){
     string userinput;
     cout<<"\nenter your input:";
@@ -142,19 +52,19 @@ int main(){
     }
     int currstate,ipsize=userinput.size();
     currstate=0;//at first currstate = intial state
-    for(i=0;i<ipsize;i++){
+    for(int i=0;i<ipsize;i++){
         int inp;
         inp=int(userinput[i])-48;
-        if(ip[currstate][inp]==-1){
+        if(ipstates[currstate][inp]==-1){
             break;
         }
         else{
-			cout<<op[currstate]<<" ";
-            currstate=ip[currstate][inp];
+			cout<<opstates[currstate]<<" ";
+            currstate=ipstates[currstate][inp];
         }
  
         if(i==ipsize-1){
-            cout<<op[currstate]<<" ";
+            cout<<opstates[currstate]<<" ";
             break;
         }
     }
@@ -162,4 +72,3 @@ cout<<endl;
     }
     return 0;
 }
-

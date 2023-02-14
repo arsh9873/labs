@@ -1,63 +1,49 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
+#include<bits/stdc++.h>
 using namespace std;
 int main(){
-    ifstream myfile("dfa.txt");
-    string temp,init,finals,states;
-    int counter=0,stcount=0;
-    while(getline(myfile,temp)){
-        if(counter==0){
-            init+=temp;
-            
+    FILE *pfile,*pf;
+    pfile = fopen("dfa.txt","r");
+    pf = fopen("dfa.txt","r");
+    int init,c,newline_cnt=0,numspace=0;
+    vector<int> finals;
+    vector<vector<int>> states;
+    fscanf(pf,"%d",&init);//scan initial 1
+    while((c=fgetc(pfile))!=EOF){
+        if(c==10){
+        if(newline_cnt==1){//intial newline count was done and now finals newline is encountered
+        for(int k=0;k<numspace+1;k++){
+        int z;
+        fscanf(pf,"%d",&z);//scanning nums properly using %d space + 1 times and a new file pointer
+        finals.push_back(z);
         }
-        else if(counter==1){
-            finals+=temp;
-            
         }
-        else if(counter>1){
-            states+=temp;
-            states.push_back('/');
-            stcount++;
+        else if(newline_cnt>1){
+        vector<int> temp;
+        for(int k=0;k<numspace+1;k++){
+        int z;
+        fscanf(pf,"%d",&z);
+        temp.push_back(z);
         }
-        counter++;
+        states.push_back(temp);
         temp.clear();
-    }
-    // cout<<"\nnum of states:"<<stcount<<endl;
-    // cout<<"init:"<<init<<endl;
-    // cout<<"finals:"<<finals<<endl;
-    // cout<<"states:"<<states;
-    int dfa[stcount][2];//rows=num of states,col=num of inputs
-    int temp2=stcount,i=0,j=0,r=0,c=0;
-    while(temp2>0){
-        while(states[i]!='/'){
-            if(states[i]!=' '){
-                if(states[i]=='-'){
-                    dfa[r][c++]=-1;
-                    i++;//skipped in case of -
-                }
-                else
-                    dfa[r][c++]=int(states[i])-48;
-                }
-            i++;
         }
-        c=0;
-        i++;
-        temp2--;
-        r++;
-    }
-    vector<int> finalstates;
-    for(i=0;i<finals.size();i++){
-        if(finals[i]!=' '){
-            finalstates.push_back(int(finals[i])-48);
+            newline_cnt++;
+            numspace=0;
+        }
+        if(c==32){
+            numspace++;
         }
     }
-    cout<<"\nstate table is:"<<endl;
-    for(i=0;i<stcount;i++){
-        for(j=0;j<2;j++){
-            cout<<dfa[i][j]<<" ";
-        }
+    cout<<"initial\n";
+    cout<<init<<endl;
+    cout<<"finals\n";
+    for(int i=0;i<finals.size();i++)
+        cout<<finals[i]<<" ";
+    cout<<endl;
+    cout<<"states\n";
+    for(int i=0;i<states.size();i++){
+        for(int j=0;j<states[i].size();j++)
+            cout<<states[i][j]<<" ";
         cout<<endl;
     }
     string ip;
@@ -65,20 +51,20 @@ int main(){
     cin>>ip;
     int currstate,ipsize=ip.size(),k=0;
     currstate=0;//at first currstate = intial state
-    for(i=0;i<ip.size();i++){
+    for(int i=0;i<ip.size();i++){
         int inp;
         inp=int(ip[i])-48;
-        if(dfa[currstate][inp]==-1){
+        if(states[currstate][inp]==-1){
             cout<<"\nexecution failed as no transistion present from that point";
             break;
         }
         else{
             cout<<"\nq"<<currstate<<"->";
-            currstate=dfa[currstate][inp];
+            currstate=states[currstate][inp];
             cout<<"q"<<currstate;
         }
         if(i==ip.size()-1){
-            if(std::find(finalstates.begin(),finalstates.end(),currstate)!=finalstates.end()){
+            if(std::find(finals.begin(),finals.end(),currstate)!=finals.end()){
                 cout<<"\nexecution successful";
             }
             else{
@@ -87,5 +73,7 @@ int main(){
             break;
         }
     }
+    
+    
     return 0;
 }

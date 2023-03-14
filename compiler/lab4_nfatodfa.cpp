@@ -1,4 +1,17 @@
-#include <bits/stdc++.h>
+/*
+file format:
+0
+1
+1,2 1 2
+2,1 2,1 2
+2,1 2,0 2
+
+*/
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <set>
+#include <algorithm>
 using namespace std;
 int main(){
     vector<vector<vector <int> > > table;//3d array to store input

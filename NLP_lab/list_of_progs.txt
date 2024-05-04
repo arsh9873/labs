@@ -1,0 +1,10 @@
+//not fully confirmed yet
+-data preprocessing, tokenizing into words, sentences etc
+-displaying content of a url after preprocessing and in a .txt file
+-naive bayes with TF-IDF, bigram and trigram using library
+-without library
+-max matching string
+-byte pair encoding
+-generate word-content matrix for a given window size, find similarity between 2 words using that
+-generate word vector using word2vec library on IMDB dataset, do text classification using word2vec and LSTM
+-generate word embedding using BERT library on IMDB dataset, do text classification using BERT embeddings and BERT classifier
